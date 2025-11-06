@@ -1,113 +1,263 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title>AI Motivation Coach</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-        body {
-            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 0 16px;
-            background: #fafafa;
-            color: #333;
-        }
+  <meta charset="utf-8" />
+  <title>Focus Boost</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      /* Calm, neutral palette: deep green → navy */
+      --bg: #f7f8f9;
+      --panel: #ffffff;
+      --ink: #1f2937;        /* slate-800 */
+      --muted: #6b7280;      /* slate-500 */
+      --brand: #0f766e;      /* teal-700 */
+      --brand-2:#1e3a8a;     /* blue-800 */
+      --ring: rgba(31, 97, 94, .28);
+    }
+    * { box-sizing:border-box }
+    html,body { height:100% }
+    body{
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(1100px 480px at 10% -10%, #e8f3f1 0, transparent 55%),
+        radial-gradient(1000px 580px at 100% -20%, #e7ecf9 0, transparent 55%),
+        var(--bg);
+      color: var(--ink);
+      margin:0; padding:24px;
+      display:flex; justify-content:center; align-items:flex-start;
+    }
+    .wrap{ width:min(760px, 100%) }
 
-        h1 {
-            color: #333;
-            margin-bottom: 8px;
-        }
+    header{ margin:10px 0 18px }
+    h1{
+      font-size: clamp(28px, 4.5vw, 38px);
+      margin:0 0 6px; line-height:1.2; letter-spacing:-0.02em;
+    }
+    .sub{ color:var(--muted); margin:0 0 18px }
 
-        .box {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 16px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        }
+    .card{
+      background:var(--panel);
+      border:1px solid #e5e7eb;
+      border-radius:16px;
+      box-shadow: 0 10px 28px rgba(3, 7, 18, .05);
+      padding:20px;
+    }
 
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weight: 600;
-        }
+    label{ display:block; font-weight:600; margin:12px 0 6px }
+    .hint{ font-size:12px; color:var(--muted); margin-top:6px }
 
-        input,
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            margin-top: 4px;
-            font-family: inherit;
-        }
+    input, textarea, button{ font:inherit }
+    input, textarea{
+      width:100%; padding:12px 14px;
+      border:1px solid #e5e7eb; border-radius:12px; background:#fff; color:var(--ink);
+      outline:none; transition: box-shadow .15s, border-color .15s, transform .04s;
+    }
+    input:focus, textarea:focus{
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+    textarea{ resize:vertical; min-height:90px; line-height:1.45 }
 
-        button {
-            margin-top: 16px;
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+    .row{ display:grid; grid-template-columns:1fr; gap:12px }
 
-        button:hover {
-            background: #0056b3;
-        }
+    .actions{ display:flex; gap:10px; align-items:center; margin-top:14px }
+    .btn{
+      border:0; border-radius:999px; padding:12px 18px; color:#fff; font-weight:700; cursor:pointer;
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      box-shadow: 0 8px 18px rgba(17, 94, 89, .22);
+      transition: transform .05s ease, filter .2s ease;
+    }
+    .btn:hover{ filter:brightness(1.03) }
+    .btn:active{ transform:translateY(1px) }
+    .btn[disabled]{ opacity:.75; cursor:not-allowed; filter:grayscale(.1); box-shadow:none }
 
-        #result {
-            margin-top: 20px;
-            background: #f0f4ff;
-            padding: 12px;
-            border-radius: 8px;
-        }
-    </style>
+    .ghost{
+      background:#fff; color:var(--brand);
+      border:1px solid #e5e7eb; box-shadow:none;
+    }
+
+    #result{
+      margin-top:18px; padding:16px 16px 12px;
+      border-radius:14px; background:#f2f7f7; border:1px dashed #d7e4e3;
+      display:none; position:relative;
+    }
+    #result.show{ display:block }
+    .msg-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px }
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      background:#fff; border:1px solid #e5e7eb; padding:8px 10px; border-radius:999px;
+      font-weight:600; color:#0f4d4a;
+    }
+    .copy{ font-size:13px; border-radius:10px; padding:8px 10px }
+
+    .tiny{ font-size:12px; color:var(--muted); margin-top:10px }
+
+    .counter{ font-size:12px; color:var(--muted); display:flex; justify-content:flex-end; margin-top:6px }
+
+    .dots{ display:inline-flex; gap:4px; margin-left:8px; vertical-align:middle }
+    .dot{ width:6px; height:6px; border-radius:50%; background:#fff; opacity:.9; animation:bounce .9s infinite ease-in-out }
+    .dot:nth-child(2){ animation-delay:.15s } .dot:nth-child(3){ animation-delay:.3s }
+    @keyframes bounce{ 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-4px)} }
+
+    footer{ text-align:center; color:var(--muted); font-size:12px; margin:20px 6px 0 }
+  </style>
 </head>
-
 <body>
-    <h1>AI Motivation Coach</h1>
-    <p>Get a short, uplifting message tailored to your mood and goal.</p>
+  <div class="wrap">
+    <header>
+      <h1>Groundstate</h1>
+      <p class="sub">Balanced reflections to help you slow down, refocus, and stay steady.</p>
 
-    <form id="coach" class="box">
-        <label>Your Name</label>
-        <input name="name" placeholder="e.g., Madelyn" required>
+    </header>
 
-        <label>Your Mood</label>
-        <input name="mood" placeholder="e.g., a bit stressed about school" required>
+    <form id="coach" class="card" autocomplete="on">
+      <div class="row">
+        <div>
+          <label>Name (optional)</label>
+          <input name="name" placeholder="e.g., Madelyn" autocomplete="name" />
+          <p class="hint">Use your real name or a nickname—totally up to you.</p>
+        </div>
 
-        <label>Your Goal</label>
-        <textarea name="goal" placeholder="e.g., stay focused and positive" rows="3" required></textarea>
+        <div>
+          <label>How are you feeling?</label>
+          <input name="mood" placeholder="e.g., feeling steady, looking for a little push" />
+        </div>
 
-        <button type="submit">Get Motivation</button>
+        <div>
+          <label>What would you like to make progress on?</label>
+          <textarea id="goal" name="goal" placeholder="e.g., build a consistent 25-minute study rhythm" rows="3"></textarea>
+          <div class="counter"><span id="goal-count">0</span>/200</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="go" type="submit" class="btn">Show me perspective</button>
+        <button id="clear" type="button" class="btn ghost">Reset</button>
+      </div>
+
+      <div id="result">
+        <div class="msg-header">
+          <span class="tag">Note</span>
+          <button id="copy" type="button" class="btn ghost copy">Copy message</button>
+        </div>
+        <div id="message" style="white-space:pre-wrap;"></div>
+        <div class="tiny" id="tiny-hint"></div>
+      </div>
     </form>
 
-    <div id="result"></div>
+    <footer>
+      Built for calm, focused days.
+    </footer>
+  </div>
 
-    <script>
-        const POST_URL = "https://mbui5.app.n8n.cloud/webhook/motivation_coach"; // ✅ Your webhook URL
+  <script>
+    const POST_URL = "https://mbui5.app.n8n.cloud/webhook/motivation_coach";
 
-        document.getElementById("coach").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const formData = Object.fromEntries(new FormData(e.target).entries());
-            document.getElementById("result").textContent = "Loading your message...";
-            const res = await fetch(POST_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-            let msg = "";
-            try {
-                const out = await res.json();
-                msg = out.message || JSON.stringify(out, null, 2);
-            } catch {
-                msg = await res.text();
-            }
-            document.getElementById("result").textContent = msg;
+    const $ = s => document.querySelector(s);
+    const coach = $("#coach");
+    const btn = $("#go");
+    const clearBtn = $("#clear");
+    const goalEl = $("#goal");
+    const countEl = $("#goal-count");
+    const result = $("#result");
+    const msg = $("#message");
+    const copyBtn = $("#copy");
+    const tiny = $("#tiny-hint");
+
+    // Save/restore form values
+    function save() {
+      const data = Object.fromEntries(new FormData(coach).entries());
+      localStorage.setItem("focusboost", JSON.stringify(data));
+    }
+    function load() {
+      const raw = localStorage.getItem("focusboost");
+      if(!raw) return;
+      try {
+        const data = JSON.parse(raw);
+        for (const [k,v] of Object.entries(data)) {
+          const el = coach.elements[k];
+          if (el) el.value = v;
+        }
+        updateCounter();
+      } catch {}
+    }
+
+    // Character counter
+    const MAX = 200;
+    function updateCounter(){
+      const val = goalEl.value || "";
+      if(val.length > MAX) goalEl.value = val.slice(0, MAX);
+      countEl.textContent = goalEl.value.length;
+    }
+    goalEl.addEventListener("input", () => { updateCounter(); save(); });
+
+    coach.addEventListener("input", save);
+    load(); updateCounter();
+
+    function setLoading(on){
+      btn.disabled = on;
+      btn.innerHTML = on
+        ? `Working on it <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>`
+        : "Get a boost";
+    }
+
+    clearBtn.addEventListener("click", () => {
+      coach.reset();
+      localStorage.removeItem("focusboost");
+      updateCounter();
+      result.classList.remove("show");
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      const text = msg.textContent.trim();
+      if(!text) return;
+      await navigator.clipboard.writeText(text);
+      copyBtn.textContent = "Copied";
+      setTimeout(() => copyBtn.textContent = "Copy message", 900);
+    });
+
+    coach.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const payload = Object.fromEntries(new FormData(coach).entries());
+      for(const k in payload) payload[k] = (payload[k] || "").trim();
+      if(!payload.name) payload.name = "Friend";
+
+      setLoading(true);
+      result.classList.remove("show");
+      msg.textContent = "";
+      tiny.textContent = "Generating a note tailored to what you shared…";
+
+      try{
+        const res = await fetch(POST_URL, {
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify(payload)
         });
-    </script>
-</body>
 
+        let message = "";
+        try {
+          const out = await res.json();
+          message = out.message || JSON.stringify(out, null, 2);
+        } catch {
+          message = await res.text();
+        }
+
+        msg.textContent = message.trim();
+        result.classList.add("show");
+        tiny.textContent = "Tip: copy it and pin it somewhere you’ll see it.";
+      }catch{
+        msg.textContent = "The service is busy—please try again in a minute.";
+        result.classList.add("show");
+        tiny.textContent = "";
+      }finally{
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
 </html>
