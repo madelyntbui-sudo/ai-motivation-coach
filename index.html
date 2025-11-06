@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Focus Boost</title>
+  <title>Groundstate</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      /* Calm, neutral palette: deep green → navy */
+      /* Calm, neutral palette */
       --bg: #f7f8f9;
       --panel: #ffffff;
       --ink: #1f2937;        /* slate-800 */
@@ -109,33 +109,32 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>Groundstate</h1>
+      <h1>🌿 Groundstate</h1>
       <p class="sub">Balanced reflections to help you slow down, refocus, and stay steady.</p>
-
     </header>
 
     <form id="coach" class="card" autocomplete="on">
       <div class="row">
         <div>
-          <label>Name (optional)</label>
-          <input name="name" placeholder="e.g., Madelyn" autocomplete="name" />
-          <p class="hint">Use your real name or a nickname—totally up to you.</p>
+          <label>How would you like me to address you?</label>
+          <input name="name" placeholder="e.g., Madelyn or your favorite nickname" autocomplete="name" />
+          <p class="hint">You can leave this blank — I’ll simply say “friend.”</p>
         </div>
 
         <div>
-          <label>How are you feeling?</label>
-          <input name="mood" placeholder="e.g., feeling steady, looking for a little push" />
+          <label>💭 How are you feeling today?</label>
+          <input name="mood" placeholder="e.g., steady overall, could use a little push" />
         </div>
 
         <div>
-          <label>What would you like to make progress on?</label>
+          <label>🎯 What would you like to make progress on?</label>
           <textarea id="goal" name="goal" placeholder="e.g., build a consistent 25-minute study rhythm" rows="3"></textarea>
           <div class="counter"><span id="goal-count">0</span>/200</div>
         </div>
       </div>
 
       <div class="actions">
-        <button id="go" type="submit" class="btn">Show me perspective</button>
+        <button id="go" type="submit" class="btn">Show perspective</button>
         <button id="clear" type="button" class="btn ghost">Reset</button>
       </div>
 
@@ -171,10 +170,10 @@
     // Save/restore form values
     function save() {
       const data = Object.fromEntries(new FormData(coach).entries());
-      localStorage.setItem("focusboost", JSON.stringify(data));
+      localStorage.setItem("groundstate", JSON.stringify(data));
     }
     function load() {
-      const raw = localStorage.getItem("focusboost");
+      const raw = localStorage.getItem("groundstate");
       if(!raw) return;
       try {
         const data = JSON.parse(raw);
@@ -202,12 +201,12 @@
       btn.disabled = on;
       btn.innerHTML = on
         ? `Working on it <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>`
-        : "Get a boost";
+        : "Show perspective";
     }
 
     clearBtn.addEventListener("click", () => {
       coach.reset();
-      localStorage.removeItem("focusboost");
+      localStorage.removeItem("groundstate");
       updateCounter();
       result.classList.remove("show");
     });
