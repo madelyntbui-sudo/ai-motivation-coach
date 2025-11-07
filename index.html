@@ -133,6 +133,13 @@
         </div>
       </div>
 
+      <label style="display:flex;align-items:center;gap:8px;margin-top:8px">
+      <input id="verse" name="include_verse" type="checkbox">
+      Include a Bible verse
+      </label>
+
+      
+
       <div class="actions">
         <button id="go" type="submit" class="btn">Show perspective</button>
         <button id="clear" type="button" class="btn ghost">Reset</button>
@@ -225,6 +232,9 @@
       const payload = Object.fromEntries(new FormData(coach).entries());
       for(const k in payload) payload[k] = (payload[k] || "").trim();
       if(!payload.name) payload.name = "Friend";
+      // checkboxes are "on" when checked; convert to true/false
+      payload.include_verse = !!document.getElementById("verse").checked;
+
 
       setLoading(true);
       result.classList.remove("show");
